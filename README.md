@@ -2,6 +2,7 @@
 
 ## Overview
 This project walks through the setup and configuration of a Windows Server 2022 machine as a primary domain controller with **Active Directory Domain Services (AD DS)**, **DNS**, and **DHCP**. The lab demonstrates infrastructure management using best practices such as static IP assignments and internal domain naming conventions.
+
 ![Infrastructure Overview](itray-infrastructure.png)
 ---
 
