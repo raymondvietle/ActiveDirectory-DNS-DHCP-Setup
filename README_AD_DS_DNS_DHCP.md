@@ -47,9 +47,9 @@ This project walks through the setup and configuration of a Windows Server 2022 
 
 ### 4. Active Directory Users and Computers
 - Created Organizational Units:
-  - `IT` with user `Bob Brown`
-  - `Staff` with user `Steve Job`
-- Added `Steve Job` to domain admin group
+  - `IT` with user `Steve Jobs`
+  - `Staff` with user `Tim Cook`
+- Added `Steve Jobs` to domain admin group
 
 ---
 
