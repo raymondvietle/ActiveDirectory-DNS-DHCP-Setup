@@ -2,7 +2,7 @@
 
 ## ✨ Overview
 I created a fictional organization called **ITRay** to simulate an enterprise-level Windows Server environment. This project demonstrates the configuration and management of core IT services including **Active Directory**, **DNS**, and **DHCP**. The environment models role-based access control for different types of staff.
-<img width="411" height="321" alt="image002" src="https://github.com/user-attachments/assets/e43165ab-215f-4fb9-830e-422cd6c72176" />
+<img width="100%" height="100%" alt="image002" src="https://github.com/user-attachments/assets/e43165ab-215f-4fb9-830e-422cd6c72176" />
 
 ---
 
