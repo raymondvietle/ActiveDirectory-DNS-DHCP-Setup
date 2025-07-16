@@ -1,76 +1,71 @@
-# Installing Active Directory Domain Services in Windows Server 2022, along with DNS and DHCP
+# 🏢 ITRay Corporation - Simulated Windows Server Infrastructure
 
-## Overview
-This project walks through the setup and configuration of a Windows Server 2022 machine as a primary domain controller with **Active Directory Domain Services (AD DS)**, **DNS**, and **DHCP**. The lab demonstrates infrastructure management using best practices such as static IP assignments and internal domain naming conventions.
-
-![Infrastructure Overview](itray-infrastructure.png)
----
-
-## Objectives
-- Configure Windows Server 2022 with a static IP
-- Install and configure AD DS and DNS
-- Promote the server to a Domain Controller
-- Validate DNS setup and create reverse lookup zones
-- Install and configure DHCP
-- Join a Windows client to the domain
-- Create Organizational Units (OUs) and users
-- Troubleshoot network connectivity (e.g., firewall/ICMP settings)
+## ✨ Overview
+I created a fictional organization called **ITRay** to simulate an enterprise-level Windows Server environment. This project demonstrates the configuration and management of core IT services including **Active Directory**, **DNS**, and **DHCP**. The environment models role-based access control for different types of staff.
 
 ---
 
-## Domain Configuration
-- **Domain Name:** `int.itray.com`
-- **Domain Controller Hostname:** `DC01`
-- **Static IP Address:** `192.168.0.1`
-- **Default Gateway for Clients:** `192.168.0.254`
+## 🛠️ Infrastructure Components
+
+**Server**: `DC01` – *Windows Server 2022*
+- Roles Installed:
+  - **Active Directory Domain Services (AD DS)**
+  - **Domain Name System (DNS)**
+  - **Dynamic Host Configuration Protocol (DHCP)**
+- Static IP Address: `192.168.0.1`
+
+**Client**: `PC01` – *Windows 11*
+- DHCP enabled (receives IP from DC01)
+- Successfully joined the `int.itray.com` domain
+- Domain users can log in based on group membership
 
 ---
 
-## Key Steps
+## 👥 Active Directory Design
 
-### 1. AD DS & DNS Installation
-- Server promoted to a domain controller using `int.itray.com`
-- DNS installed alongside AD DS
-- Validated Start of Authority and Name Server entries
-- Created and verified **Reverse Lookup Zones**
+**Domain**: `int.itray.com`
 
-### 2. DHCP Installation & Scope Configuration
-- DHCP installed after AD to ensure domain authorization
-- Scope configured: 
-  - **Range:** `192.168.0.50 – 192.168.0.200`
-  - **Gateway:** `192.168.0.254`
-  - **DNS Server:** `192.168.0.1`
+**Organizational Unit (OU)**: `ITRay`
+- Sub-OUs:
+  - `IT`
+    - User: `Steve Jobs` *(IT Staff – elevated privileges)*
+  - `Staff`
+    - User: `Tim Cook` *(Regular Staff – limited permissions)*
 
-### 3. Client Setup (PC01)
-- Network adapter set to automatic IP/DNS
-- Verified domain connection
-- Troubleshooted ICMP blocks in Windows Firewall to enable ping to DC01
-
-### 4. Active Directory Users and Computers
-- Created Organizational Units:
-  - `IT` with user `Steve Jobs`
-  - `Staff` with user `Tim Cook`
-- Added `Steve Jobs` to domain admin group
+**Permissions & GPOs**:
+- Applied different Group Policy Objects to control access:
+  - IT users have administrative rights and access to IT shares
+  - Staff users have standard permissions for regular tasks
 
 ---
 
-## Tools Used
-- Windows Server 2022
-- Active Directory Domain Services
-- DNS Manager
-- DHCP Manager
-- Windows 11 Client
-- Windows Defender Firewall
-- PowerShell, nslookup, ping, ipconfig
+## 🚪 DHCP Configuration
+- Scope: `192.168.0.50` – `192.168.0.200`
+- Leases are provided dynamically to client machines
 
 ---
 
-## Notes
-- Firewall configuration is important to enable network diagnostics
-- Reverse lookup zones are not created by default and must be added manually
+## 🧪 Troubleshooting & Tools Used
+- **DNS Event ID 4013 Fix**: Resolved startup delay by configuring DNS forwarders and ensuring AD replication
+- **DNS Request Timed Out Issue**: Fixed by changing VM network settings to **Host-Only Adapter**
+- Used tools:
+  - `nslookup`
+  - `ping`
+  - `ipconfig`
 
 ---
 
-## Author
-Raymond Le  
-📅 April 2025
+## 🎓 Key Skills Demonstrated
+- Installing and configuring Windows Server roles
+- Managing Active Directory OUs and user accounts
+- Setting up DHCP scopes and IP management
+- Troubleshooting network and DNS issues in a virtual lab
+- Implementing role-based access via GPOs
+
+---
+
+## 📍 Notes
+- Project run using **VMware Workstation**
+- All firewalls disabled during configuration testing
+- Successfully connected both Windows 10 and Windows 11 clients to the domain
+
