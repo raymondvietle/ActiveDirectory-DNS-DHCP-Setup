@@ -378,6 +378,210 @@ I created a fictional organization called **ITRay** to simulate an enterprise-le
 
 <img width="1026" height="773" alt="image058" src="https://github.com/user-attachments/assets/f095c339-2647-4388-9c9f-04e8e6dd13e2" />
 
+> Defined the IP address pool for the **ITRayIPv4** scope:
+>
+> - **Start IP address**: `192.168.0.50`
+> - **End IP address**: `192.168.0.200`
+> - **Subnet mask**: `255.255.255.0` (`/24`)
+>
+> This range allows DHCP clients to automatically obtain an IP address from within the specified range on the network.
+>
+> Click **Next** to continue.
+
+<img width="1026" height="770" alt="image059" src="https://github.com/user-attachments/assets/e95a6740-786c-4898-b2f7-ec4dfde81b60" />
+
+> During the **"Add Exclusions and Delay"** step, no exclusions were configured.
+>
+> - No specific IP addresses or ranges were excluded from distribution.
+> - Subnet delay was kept at the default value of `0 milliseconds`.
+>
+> Clicked **Next** to proceed to the lease duration configuration.
+
+<img width="1026" height="771" alt="image060" src="https://github.com/user-attachments/assets/8967d46b-4924-4a40-a8c3-8bb42723abac" />
+
+- **Lease set to default**:
+  - **Days**: `8`
+  - **Hours**: `0`
+  - **Minutes**: `0`
+- This is suitable for most networks with stable device connections.
+
+Clicked **Next** to proceed without modification.
+
+<img width="1027" height="770" alt="image061" src="https://github.com/user-attachments/assets/b1fad49d-b5bb-4d5c-b251-3aec73f22c08" />
+
+> This step allows the configuration of essential network information that will be provided to DHCP clients, such as:
+> - Default gateway (router)
+> - DNS servers
+> - WINS servers (optional)
+
+> - Selected: `Yes, I want to configure these options now`
+
+> Clicked **Next** to proceed with DHCP options setup.
+
+<img width="1026" height="770" alt="image062" src="https://github.com/user-attachments/assets/9c26a9b3-3446-4b39-83b1-99775fc05fcb" />
+
+> Entered **192.168.0.254** as the **default gateway**.  
+> This is a placeholder gateway address to be handed out to clients by the DHCP server.  
+> Clicked **Next** to proceed.
+
+<img width="1026" height="772" alt="image063" src="https://github.com/user-attachments/assets/d35a57c5-0548-462a-90b4-fde779d1accd" />
+
+> Confirmed that the **Parent domain** is set to `int.itray.com`  
+> Verified that the DNS server **IP address** is `192.168.0.1`, which is the IP of DC01  
+> No changes needed—clicked **Next** to continue
+
+<img width="1025" height="767" alt="image064" src="https://github.com/user-attachments/assets/bf1ef6c8-5629-42b9-8033-c4c2f5e703dd" />
+
+> No WINS servers are used in this environment  
+> Left all fields empty  
+> Clicked **Next** to proceed
+
+<img width="1024" height="768" alt="image065" src="https://github.com/user-attachments/assets/b824a194-2a19-430b-8a66-aa426203f7bd" />
+
+> Selected: **Yes, I want to activate this scope now**  
+> This ensures clients can start receiving IP addresses from the DHCP scope immediately  
+> Clicked **Next** to proceed
+
+<img width="1027" height="772" alt="image066" src="https://github.com/user-attachments/assets/6f0c2107-d1fd-42fd-aab2-d6e02c236aed" />
+
+> Switched over to **PC01**, the Windows 10 Professional client  
+
+<img width="1028" height="775" alt="image067" src="https://github.com/user-attachments/assets/b76fa98f-99ba-40b0-ad25-d15d1f3845f2" />
+
+> Navigated to:  
+> `Settings > Network & Internet > Status > Change adapter options`  
+> Purpose: To inspect and ensure the **Ethernet adapter** is properly receiving configuration from DHCP (IP address, gateway, DNS).
+
+<img width="1027" height="769" alt="image068" src="https://github.com/user-attachments/assets/4cbc4c3d-b3a9-437b-a90f-ea8fa5c9f140" />
+
+> Step: Right-clicked `Ethernet0` adapter and selected **Properties**  
+> Purpose: To verify and configure TCP/IPv4 settings, ensuring the adapter is set to obtain IP and DNS automatically from the DHCP server.
+
+<img width="1028" height="770" alt="image069" src="https://github.com/user-attachments/assets/cb06372a-203c-4c7d-9cbf-33c9cfc44b79" />
+
+> Step: In the **Ethernet0 Properties** window, selected **Internet Protocol Version 4 (TCP/IPv4)** and clicked **Properties**  
+
+<img width="836" height="653" alt="image070" src="https://github.com/user-attachments/assets/b1e7913d-8881-4ed0-a1a9-d217d6de613a" />
+
+> Selected `Use the following IP address:`  
+> **IP address**: `192.168.0.51`  
+>  **Subnet mask**: `255.255.255.0`  
+>  **Default gateway**: `192.168.0.254`  
+>  Selected `Use the following DNS server addresses:`  
+>  **Preferred DNS server**: `192.168.0.1`  
+>  Enabled **Validate settings upon exit**  
+>  Clicked **OK** to apply settings.
+
+> This was done because DHCP was not automatically connecting to the domain. Manual configuration ensures connectivity within the defined DHCP scope and allows domain join capability.
+
+> 💡 **Troubleshooting Insight**:  
+> The client PC was not initially receiving a DHCP-assigned IP address or connecting to the domain.  
+> ✅ Resolved this by changing the **VMware Network Adapter** setting from **Host-only/NAT** to **Bridged Connection**, allowing the virtual machine to communicate properly on the same subnet as the domain controller.
+
+<img width="1021" height="708" alt="image072" src="https://github.com/user-attachments/assets/fcb5eab4-dc0e-432b-95d7-0ee46df5e8d7" />
+
+>  Opened **Command Prompt**  
+> Ran the command: `ipconfig`  
+>  Verified the following details:  
+>  **IPv4 Address**: `192.168.0.51`  
+>  **Subnet Mask**: `255.255.255.0`  
+>  **Default Gateway**: `192.168.0.254`
+
+> ✅ **Result**: Static IP configuration successfully applied and reflected in system output.
+
+<img width="807" height="616" alt="image074" src="https://github.com/user-attachments/assets/3ad87269-63a0-465f-85aa-c209a455bd9d" />
+
+> Opened **File Explorer**  
+> Right-clicked on **This PC** from the sidebar  
+> Clicked **Properties**
+> This opens the **System** settings window, where you can join the computer to a domain under "Computer name, domain, and workgroup settings".
+
+<img width="1002" height="723" alt="image075" src="https://github.com/user-attachments/assets/5b8a0220-3141-4af4-8c49-5d11a00e2a20" />
+
+> Opened **System Settings**  
+> Scrolled to **Related settings**  
+> Clicked on **Advanced system settings**
+> This is required to access domain settings through the **System Properties** window.
+
+<img width="1006" height="724" alt="image076" src="https://github.com/user-attachments/assets/89fc60a4-b527-40e5-86fa-2ff7f9bd3c50" />
+
+> From **System Properties**  
+> Under **Computer Name** tab  
+> Clicked **Change...** to rename this computer or join a domain
+
+<img width="1003" height="722" alt="image077" src="https://github.com/user-attachments/assets/98b6b6c7-8eb7-4f76-9941-f8a956479911" />
+
+> In **System Properties**  
+> Clicked **Change...** under **Computer Name** tab  
+> Selected **Domain:** and entered `int.itray.com`  
+> Clicked **OK** to initiate domain join
+
+<img width="1003" height="723" alt="image078" src="https://github.com/user-attachments/assets/66d288c8-b274-47e4-a51d-8aeab11d766c" />
+
+> Entered domain admin credentials to authorize the domain join  
+> Username: `administrator`  
+> Clicked **OK**
+
+<img width="1006" height="724" alt="image079" src="https://github.com/user-attachments/assets/1c899d1b-ca8f-4da5-ac47-30001ff9f8b9" />
+
+> Successfully joined the domain  
+> Domain: `int.itray.com`  
+> Confirmation message: **Welcome to the int.itray.com domain.**  
+> Clicked **OK**
+
+<img width="1017" height="725" alt="image080" src="https://github.com/user-attachments/assets/ffbab3f0-7ef1-4ffa-adde-63af9b990b48" />
+
+> On DC01, open **Server Manager**  
+> Navigate to `Tools` > `Active Directory Users and Computers`  
+> This will allow us to create and manage domain users under `int.itray.com`
+
+<img width="1003" height="725" alt="image081" src="https://github.com/user-attachments/assets/5f140489-30a0-487e-b603-b128e5aba67d" />
+
+> Confirmed that `Active Directory Users and Computers` loaded successfully.  
+> Navigated to the `int.itray.com` domain structure where Organizational Units (OUs) and users will be created.
+
+<img width="1009" height="702" alt="image082" src="https://github.com/user-attachments/assets/f8cded16-9968-48f2-8f19-18958a37d156" />
+
+> In **Active Directory Users and Computers**, right-click your domain name (`int.itray.com`)  
+> Go to `New` > `Organizational Unit`  
+> This allows you to create logical containers to organize users, computers, and groups
+
+<img width="1002" height="723" alt="image083" src="https://github.com/user-attachments/assets/bbbb7381-9617-4af3-9770-3877f11ad85b" />
+
+> Name the new Organizational Unit `ITRay` and click **OK**  
+> This OU will serve as the top-level container to organize your domain resources
+
+<img width="1007" height="728" alt="image085" src="https://github.com/user-attachments/assets/7360594a-4480-492c-afb0-4f7d91112dd2" />
+
+> Inside the `ITRay` Organizational Unit, create two sub-OUs:  
+> - `IT`  
+> - `Staff
+
+<img width="1005" height="721" alt="image086" src="https://github.com/user-attachments/assets/8007194b-fd51-4257-bba4-182dfc709707" />
+<img width="1004" height="722" alt="image087" src="https://github.com/user-attachments/assets/d659e6d0-5dff-4929-85f8-ccdb74725443" />
+<img width="1008" height="726" alt="image088" src="https://github.com/user-attachments/assets/5ac68e31-9065-4a92-9bd3-31541f7e086d" />
+
+> Created user accounts in Active Directory:
+> - **Steve Jobs** in the `IT` Organizational Unit  
+>   - Logon name: `SJobs@int.itray.com`
+> - **Tim Cook** in the `Staff` Organizational Unit  
+>   - Logon name: `TCook@int.itray.com`
+
+<img width="1003" height="723" alt="image089" src="https://github.com/user-attachments/assets/4881473b-02b2-44b9-8e27-5cb95ae2d30a" />
+
+> Granted administrative privileges to the **Steve Jobs** user:
+> - Navigated to `Active Directory Users and Computers`
+> - Right-clicked on the **Steve Jobs** user in the `IT` OU and selected `Properties`
+
+<img width="1003" height="720" alt="image090" src="https://github.com/user-attachments/assets/1aded1cd-34e5-420b-8b1a-f0e1a6f951a9" />
+
+
+
+
+
+
+
+
 
 
 
