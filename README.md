@@ -17,7 +17,7 @@ I created a fictional organization called **ITRay** to simulate an enterprise-le
   - **Dynamic Host Configuration Protocol (DHCP)**
 - Static IP Address: `192.168.0.1`
 
-**Client**: `PC01` – *Windows 11*
+**Client**: `PC01` – *Windows 10*
 - DHCP enabled (receives IP from DC01)
 - Successfully joined the `int.itray.com` domain
 - Domain users can log in based on group membership
@@ -49,13 +49,74 @@ I created a fictional organization called **ITRay** to simulate an enterprise-le
 ---
 
 ## 🧪 Troubleshooting & Tools Used
-- **DNS Event ID 4013 Fix**: Resolved startup delay by configuring DNS forwarders and ensuring AD replication
-- **DNS Request Timed Out Issue**: Fixed by changing VM network settings to **Host-Only Adapter**
-- Used tools:
-  - `nslookup`
-  - `ping`
-  - `ipconfig`
+<img width="1030" height="559" alt="image103" src="https://github.com/user-attachments/assets/d9ac6ff9-91b6-4146-baca-08057706d351" />
 
+> Initially, **PC02** failed to receive a valid IP from DC01 despite having IPv4 and DNS set to automatic.
+>
+> Running:
+>
+> ```
+> ipconfig /release
+> ipconfig /renew
+> ```
+>
+> only returned a **link-local address** and no gateway, indicating that DHCP offers were not received.
+> 
+<img width="1344" height="717" alt="Screenshot 2025-07-21 152333" src="https://github.com/user-attachments/assets/d07c8f2c-2542-44f4-b449-2830753c87dd" />
+
+
+> We attempted to test connectivity:
+>
+> - `ping 192.168.0.1` → ❌ General failure  
+> - `ping DC01` → ✅ Successful (via IPv6)
+>
+> This suggested that the VM was isolated from the DHCP broadcast on the domain network, likely due to the **NAT** network adapter setting.
+
+---
+
+# 🔄 Fix: Switch to Bridged Mode
+
+<img width="1004" height="539" alt="image104" src="https://github.com/user-attachments/assets/39ba3670-1d95-4801-b5bf-f681eab8c3c7" />
+
+
+> After switching the VM network adapter to **Bridged Mode**, we reran:
+>
+> ```
+> ipconfig /release
+> ipconfig /renew
+> ```
+>
+> PC02 successfully received a DHCP lease from **DC01**:
+>
+> - IPv4 Address: `192.168.0.50`  
+> - Subnet Mask: `255.255.255.0`  
+> - Default Gateway: `192.168.0.254`  
+> - DNS Suffix: `int.itray.com`
+
+---
+
+### ✅ Domain Join Confirmation
+
+<img width="1045" height="571" alt="image112" src="https://github.com/user-attachments/assets/7d2ef67d-7f88-4c79-8fec-a51580a1d192" />
+
+
+> With DHCP now functional, we joined the domain `int.itray.com` using **Administrator** credentials.
+
+🧾 **Result:**  
+> PC02 is now fully connected to DC01 via the domain, confirming DHCP, DNS, and domain controller communication are functioning correctly over **Bridged Mode**.
+
+## 🧰 CMD Tools Used During Troubleshooting
+
+> Below are the key Command Prompt (CMD) tools used while diagnosing network and domain join issues on PC02:
+
+> | Command               | Purpose                                                                 |
+> |-----------------------|-------------------------------------------------------------------------|
+> | `ipconfig`            | View IP configuration, DNS suffix, default gateway, and adapter info   |
+> | `ipconfig /release`   | Releases the current IP address lease from DHCP                         |
+> | `ipconfig /renew`     | Renews the IP lease from the DHCP server                                |
+> | `ping <IP or host>`   | Tests connectivity to a host/IP address                                 |
+> | `ping 192.168.0.1`    | Tested local gateway connectivity (failed in NAT mode)                  |
+> | `ping DC01`           | Tested domain controller connectivity via hostname (succeeded over IPv6)|
 ---
 
 ## 🎓 Key Skills Demonstrated
@@ -575,38 +636,100 @@ Clicked **Next** to proceed without modification.
 
 <img width="1003" height="720" alt="image090" src="https://github.com/user-attachments/assets/1aded1cd-34e5-420b-8b1a-f0e1a6f951a9" />
 
+> Opened the **Steve Jobs** user properties and navigated to the **Member Of** tab to add administrative group membership.
 
+<img width="1002" height="723" alt="image091" src="https://github.com/user-attachments/assets/f22eedee-4075-4e8e-ac11-584012267d8c" />
 
+> Clicked the **Add...** button in the **Member Of** tab to assign Steve Jobs to the Administrators group.
 
+<img width="1009" height="726" alt="image092" src="https://github.com/user-attachments/assets/4d6e865b-6d82-43ad-8366-01c85287238b" />
 
+> Typed in `domain` under **Enter the object names to select**, then clicked **Check Names** to verify the group.
 
+<img width="1007" height="726" alt="image093" src="https://github.com/user-attachments/assets/38ffad62-d681-4c45-90d0-01d6ef9d4bb8" />
 
+> After clicking **Check Names**, a list of matching groups appeared. Selected **Domain Admins** to grant Steve Jobs administrative privileges on the domain.
 
+<img width="1005" height="723" alt="image094" src="https://github.com/user-attachments/assets/c6d3997c-1745-4da0-b695-ae16cbb6803c" />
 
+> Once **Domain Admins** is selected, it populates the object name field. Click **OK** to confirm and add Steve Jobs to the Domain Admins group.
 
+<img width="1000" height="753" alt="image096" src="https://github.com/user-attachments/assets/43d8e6d7-1083-4178-b8c3-651d24e70eeb" />
 
+> Now that the user account is created and added to the Domain Admins group, we log into **PC01** using the **Steve Jobs** domain account (SJobs) to verify login access.
 
+<img width="1010" height="758" alt="image097" src="https://github.com/user-attachments/assets/6835c188-7255-48d7-8cc6-3cd15e48e91c" />
+<img width="1005" height="754" alt="image098" src="https://github.com/user-attachments/assets/bc33d9e4-9945-44e3-84ec-4e29354c264a" />
 
+> Upon first login to **PC01** with the `SJobs` domain account, the system prompts a **password change**, as expected for new Active Directory accounts.
 
+<img width="1020" height="763" alt="image099" src="https://github.com/user-attachments/assets/6eb69efd-50f0-4458-b5a6-59dcdc5b5a25" />
 
+> After creating the user `Steve Jobs` under the **IT** Organizational Unit and assigning **Domain Admin** group membership, we logged into **PC01** using his domain credentials.
 
+<img width="1013" height="759" alt="image100" src="https://github.com/user-attachments/assets/d52d57d5-d81c-4333-a389-61633aae8672" />
 
+> We now do the same with Tim Cook
 
+<img width="1017" height="766" alt="image101" src="https://github.com/user-attachments/assets/69192239-8cd5-4d32-aa9d-59db9ff7b85d" />
 
+> ## 🛠️ Prepping PC02 (Windows 11) for Domain Join
+<img width="1434" height="844" alt="image102" src="https://github.com/user-attachments/assets/58efc4be-d511-4841-b10b-3420fb8a8704" />
 
+> On **PC02**, verified initial network settings prior to joining the domain.
+> 
+> PC02 is running **Windows 11**. The IP assignment and DNS server settings are currently set to **Automatic (DHCP)**.  
+> Status shows **"Unidentified network - No internet"**, which means the PC has not yet received valid network configuration from the DHCP server or is unable to resolve the domain controller.
 
+<img width="1030" height="559" alt="image103" src="https://github.com/user-attachments/assets/4c9811e1-4dfb-425c-91a7-0ef7679f2025" />
 
+> After setting the Ethernet adapter on **PC02** to automatic IP and DNS:
+>
+> - Ran `ipconfig /release` to reset the adapter
+> - Followed up with `ipconfig /renew` to request a new IP lease
+>
+> Despite this, the machine did **not** receive an IP address from the domain controller (DC01).
+>
+> The resulting IP address was `192.168.19.128`, indicating it pulled from a different scope or a host-only configuration, and the **Default Gateway was blank**, meaning it failed to reach the DHCP service hosted on DC01.
 
+<img width="1014" height="542" alt="image104" src="https://github.com/user-attachments/assets/32321f6d-39eb-4159-ab44-36ed89b6c166" />
 
+> While troubleshooting DHCP failure on **PC02**, a ping test was performed:
+>
+> - `ping 192.168.0.1` (default gateway) **failed** with “General failure.”
+> - `ping DC01` **succeeded**, showing successful communication with the domain controller using IPv6.
+>
+> This behavior suggests that the **network adapter was set to Host-Only mode** in VMware, which isolates the VM from the physical network and prevents it from reaching the DHCP server on the 192.168.0.x subnet.
 
+> Switched the adapter to **Bridged Mode** to allow the VM to communicate directly with the physical network and obtain IP/DNS settings from the domain controller (DC01).
 
+<img width="1004" height="539" alt="image104" src="https://github.com/user-attachments/assets/5477cea6-8385-400a-ba15-83498ea650cb" />
 
+> After identifying that **Host-Only** network mode was preventing DHCP from reaching **DC01**, the adapter was switched to **Bridged Mode**.
+>
+> The following steps were executed to verify connectivity:
+>
+> - `ipconfig /release`
+> - `ipconfig /renew`
+>
+> ✅ The machine successfully received:
+>
+> - **IPv4 Address:** 192.168.0.50  
+> - **DNS Suffix:** int.itray.com  
+> - **Default Gateway:** 192.168.0.254
 
+<img width="1445" height="854" alt="image111" src="https://github.com/user-attachments/assets/9f52b71a-47d7-4936-bcf6-18f8c0fb5ec8" />
+<img width="1045" height="571" alt="image112" src="https://github.com/user-attachments/assets/b1ad8113-59c5-4d65-9266-507284ca24ba" />
 
-
-
-
-
+> After successfully obtaining a valid IP from **DC01's DHCP server**, we proceeded to join **PC02** to the domain.
+>
+> Steps:
+> - Opened **System Properties** > **Computer Name/Domain Changes**
+> - Entered domain: `int.itray.com`
+> - Authenticated using domain credentials: `administrator`
+>
+> The system prompted for a restart to complete the process.
+> > **PC02** has successfully joined the domain and is now connected to **DC01**, confirming full domain integration and DHCP communication.
 
 
 
