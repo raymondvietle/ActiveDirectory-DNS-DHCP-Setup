@@ -17,7 +17,7 @@ I created a fictional organization called **ITRay** to simulate an enterprise-le
   - **Dynamic Host Configuration Protocol (DHCP)**
 - Static IP Address: `192.168.0.1`
 
-**Client**: `PC01` – *Windows 10*
+**Client**: `PC01` – *Windows 10* / *Windows 11*
 - DHCP enabled (receives IP from DC01)
 - Successfully joined the `int.itray.com` domain
 - Domain users can log in based on group membership
