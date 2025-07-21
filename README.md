@@ -74,7 +74,7 @@ I created a fictional organization called **ITRay** to simulate an enterprise-le
 
 ---
 
-# 🔄 Fix: Switch to Bridged Mode
+### 🔄 Fix: Switch to Bridged Mode
 
 <img width="1004" height="539" alt="image104" src="https://github.com/user-attachments/assets/39ba3670-1d95-4801-b5bf-f681eab8c3c7" />
 
@@ -105,7 +105,7 @@ I created a fictional organization called **ITRay** to simulate an enterprise-le
 🧾 **Result:**  
 > PC02 is now fully connected to DC01 via the domain, confirming DHCP, DNS, and domain controller communication are functioning correctly over **Bridged Mode**.
 
-## 🧰 CMD Tools Used During Troubleshooting
+### 🧰 CMD Tools Used During Troubleshooting
 
 > Below are the key Command Prompt (CMD) tools used while diagnosing network and domain join issues on PC02:
 
